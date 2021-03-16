@@ -12,7 +12,7 @@ try:
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     outhsv = cv2.inRange(hsv, np.array([210/2, 15, 20]), np.array([240/2,255,255]))
     img[:, :, 1] = np.bitwise_or(img[:, :, 1], outhsv)
-    cv2.imshow("Image",img)
+    cv2.imshow("Image",dpth)
     cv2.waitKey(1)
 except Exception as e:
   print(e)
