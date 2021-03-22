@@ -34,7 +34,7 @@ def hunt(color):
     bot = np.array([colormap[color][0]/2, 20, 10])
     top = np.array([colormap[color][1]/2,255,235])
 
-    rate = rospy.Rate(30)
+    rate = rospy.Rate(10)
 
     #size = spin(r,top,bot,turn_limit,rate)
     size = 6
