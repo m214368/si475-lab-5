@@ -81,7 +81,8 @@ def hunt(color):
             last_seen = np.sign(error)
 
         dpth=r.getDepth()
-        if (dpth ): # FIX THIS LINE
+        print(dpth)
+        if (True): # FIX THIS LINE
             lin_speed = 0
             if (abs(error) < 10):
                 r.drive(angSpeed=0, linSpeed=0)
