@@ -3,6 +3,8 @@ from turtleAPI import robot
 import cv2
 import numpy as np
 
+np.set_printoptions(threshold=np.inf)
+
 # make the robot and lists for tracking error
 r = robot()
 error_list = []
@@ -81,8 +83,11 @@ def hunt(color):
             last_seen = np.sign(error)
 
         dpth=r.getDepth()
-        print(dpth)
-        if (False): # FIX THIS LINE
+        middle_row = dpth[height/2,:]
+        print(middle_row)
+        min = np.nanmin(middle_row)
+        print (min)
+        if (min < 700): # FIX THIS LINE
             lin_speed = 0
             if (abs(error) < 10):
                 r.drive(angSpeed=0, linSpeed=0)
