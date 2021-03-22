@@ -82,7 +82,7 @@ def hunt(color):
 
         dpth=r.getDepth()
         print(dpth)
-        if (True): # FIX THIS LINE
+        if (False): # FIX THIS LINE
             lin_speed = 0
             if (abs(error) < 10):
                 r.drive(angSpeed=0, linSpeed=0)
@@ -191,5 +191,6 @@ def Blob():
     else :
         detector = cv2.SimpleBlobDetector_create(params)
 
-color = raw_input("What color to hunt:")
+#color = raw_input("What color to hunt:")
+color = "blue"
 hunt(color)
