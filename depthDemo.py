@@ -87,7 +87,7 @@ def hunt(color):
         print(middle_row)
         min = np.nanmin(middle_row)
         print (min)
-        if (min < 700): # FIX THIS LINE
+        if (min < 700 and min > 0): # FIX THIS LINE
             lin_speed = 0
             if (abs(error) < 10):
                 r.drive(angSpeed=0, linSpeed=0)
