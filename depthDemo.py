@@ -196,6 +196,6 @@ def Blob():
     else :
         detector = cv2.SimpleBlobDetector_create(params)
 
-#color = raw_input("What color to hunt:")
-color = "blue"
+color = raw_input("What color to hunt:")
+#color = "blue"
 hunt(color)
