@@ -70,7 +70,7 @@ class robot():
     #publisher and bridges for ros immagery to openCV images
     self.bridge = CvBridge()
     self.image_sub = rospy.Subscriber("/camera/rgb/image_raw",Image,self.__imgHandle)
-    self.depth_sub = rospy.Subscriber("/camera/depth/image_rect",Image,self.__depthHandle)
+    self.depth_sub = rospy.Subscriber("/camera/depth/image_raw",Image,self.__depthHandle)
 
     #node for bubmer sensors
     self.bumperStatus = rospy.Subscriber("/mobile_base/events/bumper", BumperEvent, self.__bumperHandle)
