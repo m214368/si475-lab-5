@@ -30,8 +30,8 @@ def pid_speed(kp, ki, kd, error, old_error, error_list):
 def hunt(color):
     speed_limit = .05 # speed limit
     turn_limit = .2 # turn speed limit
-    colormap = {"blue":[220,240],"green":[130,160],"purple":[280,330],"red":[0,10],"yellow":[50,70]}
-    bot = np.array([colormap[color][0]/2, 40, 40])
+    colormap = {"blue":[220,240],"green":[130,160],"purple":[250,330],"red":[0,10],"yellow":[50,70]}
+    bot = np.array([colormap[color][0]/2, 20, 70])
     top = np.array([colormap[color][1]/2,255,255])
 
     rate = rospy.Rate(30)
@@ -53,6 +53,7 @@ def hunt(color):
         augimage = image
         augimage[:, :, 1] = np.bitwise_or(image[:, :, 1], mapimage)
         cv2.imshow('augmented',augimage)
+        # cv2.imshow('normal',image)
         cv2.waitKey(1)
         # current pos
         current_pos = r.getPositionTup()
