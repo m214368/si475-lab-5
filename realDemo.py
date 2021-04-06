@@ -48,12 +48,13 @@ def hunt(color):
 
     while True:
         image = r.getImage()
+        cv2.imshow('normal',image)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         mapimage = cv2.inRange(hsv, bot, top)
         augimage = image
         augimage[:, :, 1] = np.bitwise_or(image[:, :, 1], mapimage)
         cv2.imshow('augmented',augimage)
-        # cv2.imshow('normal',image)
+        
         cv2.waitKey(1)
         # current pos
         current_pos = r.getPositionTup()
