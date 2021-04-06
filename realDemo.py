@@ -80,13 +80,22 @@ def hunt(color):
             error = (left - right)/total
             last_seen = np.sign(error)
 
-        if (total > 300000):
+        
+        dpth=r.getDepth()
+        middle_row = dpth[height/2,:]
+        print(middle_row)
+        if len(middle_row[np.nonzero(middle_row)]) > 0:
+            min = np.nanmin(middle_row[np.nonzero(middle_row)])
+        else:
+            min = 1200
+        print (min)
+        if (min < 1000): # FIX THIS LINE
             lin_speed = 0
             if (abs(error) < 10):
                 r.drive(angSpeed=0, linSpeed=0)
                 print("done")
                 return
-
+        
         # speed
         ang_speed = pid_speed(.2, .01, .001, error, old_error, error_list)
 
