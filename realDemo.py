@@ -28,8 +28,8 @@ def pid_speed(kp, ki, kd, error, old_error, error_list):
     return to_return
 
 def hunt(color):
-    speed_limit = .05 # speed limit
-    turn_limit = .2 # turn speed limit
+    speed_limit = 0#.05 # speed limit
+    turn_limit = 0#.2 # turn speed limit
     colormap = {"blue":[220,240],"green":[130,160],"purple":[250,305],"red":[0,10],"yellow":[50,70]}
     bot = np.array([colormap[color][0]/2, 20, 70])
     top = np.array([colormap[color][1]/2,255,255])
@@ -46,7 +46,7 @@ def hunt(color):
     # loop until at position
     old_error = 0
 
-    while True:
+    while not rospy.is_shutdown():
         image = r.getImage()
         cv2.imshow('normal',image)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -83,15 +83,24 @@ def hunt(color):
             detector = cv2.SimpleBlobDetector_create(params)
 
         keypoints = detector.detect(mapimage)
-            
+        blank = np.zeros((1, 1)) 
+        blobs = cv2.drawKeypoints(image, keypoints, blank, (0, 0, 255),
+                                  cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+  
+        number_of_blobs = len(keypoints)
+        text = "Number of Circular Blobs: " + str(len(keypoints))
+        cv2.putText(blobs, text, (20, 550),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 100, 255), 2)
+  
+        # Show blobs
+        cv2.imshow("Filtering Circular Blobs Only", blobs)
         #end blob detection
         
 
         augimage = image
         augimage[:, :, 1] = np.bitwise_or(image[:, :, 1], mapimage)
         cv2.imshow('augmented',augimage)
-        
-        cv2.waitKey(1)
+        cv2.waitKey(0)
         # current pos
         current_pos = r.getPositionTup()
         current_angle = current_pos[2]
@@ -103,7 +112,7 @@ def hunt(color):
         left = cv2.countNonZero(halfLeft)
         halfRight = mapimage[:,width:]
         right = cv2.countNonZero(halfRight)
-        print ("total: "+str(total)+" left: "+str(left)+" right: "+str(right))
+        #print ("total: "+str(total)+" left: "+str(left)+" right: "+str(right))
 
         # calculate angle speed and lin speed drive
         lin_speed = speed_limit
@@ -121,27 +130,27 @@ def hunt(color):
         
         dpth=r.getDepth()
         middle_row = dpth[height/2,:]
-        print(middle_row)
+        #print(middle_row)
         if len(middle_row[np.nonzero(middle_row)]) > 0:
             min = np.nanmin(middle_row[np.nonzero(middle_row)])
         else:
             min = 1200
-        print (min)
+        #print (min)
         if (min < 1000): # FIX THIS LINE
             lin_speed = 0
             if (abs(error) < 10):
                 r.drive(angSpeed=0, linSpeed=0)
                 print("done")
-                return
+                #return
         
         # speed
-        ang_speed = pid_speed(.2, .01, .001, error, old_error, error_list)
+        ang_speed = 0#pid_speed(.2, .01, .001, error, old_error, error_list)
 
 
         if (ang_speed > turn_limit):
             ang_speed = turn_limit
 
-        ang_speed = ang_speed + (lin_speed/speed_limit)*np.sign(ang_speed)
+        ang_speed = 0#ang_speed + (lin_speed/speed_limit)*np.sign(ang_speed)
 
         r.drive(angSpeed=ang_speed, linSpeed=lin_speed)
         print('speed: ' + str(ang_speed) + ' ' + str(lin_speed))
@@ -149,59 +158,7 @@ def hunt(color):
         # set old values
         old_error=error
         rate.sleep()
-        print(' ')
 
-def spin(r,top,bot,turn_limit,rate):
-    # initial spin to find largest color blob
-    cur_pos = r.getPositionTup()
-    init_ang = cur_pos[2]
-    
-    size = 0
-    
-    stillSpin = True
-    pastQuarter = False
-
-    while stillSpin:
-        cur_pos = r.getPositionTup()
-        cur_ang = cur_pos[2]
-        image = r.getImage()
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        mapimage = cv2.inRange(hsv, bot, top)
-        augimage = image
-        augimage[:, :, 1] = np.bitwise_or(image[:, :, 1], mapimage)
-        cv2.imshow('augmented',augimage)
-        cv2.waitKey(1)
-        height, width = mapimage.shape[0:2]
-        total = cv2.countNonZero(mapimage)
-        if total > size:
-            size = total
-        width = width//2 # integer division
-        halfLeft = mapimage[:,:width]
-        left = cv2.countNonZero(halfLeft)
-        halfRight = mapimage[:,width:]
-        right = cv2.countNonZero(halfRight)
-        r.drive(angSpeed=turn_limit, linSpeed=0)
-
-        # For debugging:
-        print ("total: "+str(total)+" left: "+str(left)+" right: "+str(right))
-        #print("Angle Diff: " + str(abs(cur_ang-init_ang)))
-
-        angleDiff = abs(cur_ang-init_ang)
-
-        # the robot has spun a quarter turn
-        if(angleDiff > pi/2):
-            pastQuarter = True
-
-        # when the robot has done a quarter turn and the
-        # diff btwn original and current is close to 0, we are
-        # done turning
-        if(pastQuarter and angleDiff < 0.1):
-            print("done turning")
-            stillSpin = False
-
-        rate.sleep()
-        
-    return size
 
 def Blob(): 
     # https://learnopencv.com/blob-detection-using-opencv-python-c/
@@ -243,7 +200,7 @@ def Blob():
     number_of_blobs = len(keypoints)
     text = "Number of Circular Blobs: " + str(len(keypoints))
     cv2.putText(blobs, text, (20, 550),
-    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 100, 255), 2)
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 100, 255), 2)
   
     # Show blobs
     cv2.imshow("Filtering Circular Blobs Only", blobs)
