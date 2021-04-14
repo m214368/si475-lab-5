@@ -13,32 +13,41 @@ try:
   while not rospy.is_shutdown():
     #dpth=r.getDepth()
     img=r.getImage()
+    height, width = img.shape[0:2]
+    img = img[height/3:2*height/3,width/3:2*width/3]
+    #img = cv2.GaussianBlur(img, (1, 1), 0)
+    #img = cv2.GaussianBlur(img, (5, 5), 0)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mapimg = cv2.inRange(hsv, np.array([250/2, 20, 70]), np.array([305/2,255,255]))
+    
     img[:, :, 1] = np.bitwise_or(img[:, :, 1], mapimg)
     
     #start blob detection
     params = cv2.SimpleBlobDetector_Params()
     
     # Change thresholds
-    params.minThreshold = 10;
-    params.maxThreshold = 200;
+    params.minThreshold = 0;
+    params.maxThreshold = 100;
+
+    # Filter by Color
+    params.filterByColor = True
+    params.blobColor = 255
     
     # Filter by Area.
-    params.filterByArea = False
-    params.minArea = 300
+    params.filterByArea = True
+    params.minArea = 50
     
     # Filter by Circularity
     params.filterByCircularity = True
-    params.minCircularity = 0.01
+    params.minCircularity = 0.5
     
     # Filter by Convexity
     params.filterByConvexity = True
-    params.minConvexity = 0.01
+    params.minConvexity = 0.5
     
     # Filter by Inertia
     params.filterByInertia = True
-    params.minInertiaRatio = 0.01
+    params.minInertiaRatio = 0.5
     
     # Create a detector with the parameters
     ver = (cv2.__version__).split('.')
@@ -68,8 +77,7 @@ except Exception as e:
   print(e)
   rospy.loginto("node now terminated")
 
-import cv2
-import numpy as np
+
 
 img = cv2.imread('rbv2g.jpg',0)
 img = cv2.medianBlur(img,5)
