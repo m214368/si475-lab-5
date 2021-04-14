@@ -163,6 +163,7 @@ def hunt(color):
 def Blob(): 
     # https://learnopencv.com/blob-detection-using-opencv-python-c/
     # https://www.geeksforgeeks.org/find-circles-and-ellipses-in-an-image-using-opencv-python/
+    # https://stackoverflow.com/questions/42203898/python-opencv-blob-detection-or-circle-detection
     # Setup SimpleBlobDetector parameters.
     params = cv2.SimpleBlobDetector_Params()
     
